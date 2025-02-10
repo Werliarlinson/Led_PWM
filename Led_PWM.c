@@ -33,34 +33,6 @@ void set_pwm_us(uint gpio, uint16_t us)
     pwm_set_gpio_level(gpio, level);
 }
 
-// Função para definir o ciclo ativo em porcentagem (0-100) no pino
-void set_pwm_porcent(uint gpio, uint8_t percent) 
-{
-    uint16_t value = (uint16_t)((percent / 100.0) * 10000);
-    printf("set_pwm_porcent - gpio: %d, percent: %d, value: %d\n", gpio, percent, value);
-    pwm_set_gpio_level(gpio, value);
-}
-
-// Função para aumentar a intensidade gradualmente
-void increase_pwm(uint gpio, uint8_t start_percent, uint8_t end_percent, uint delay_ms) 
-{
-    for (int8_t i = start_percent; i <= end_percent; i++) 
-    {
-        set_pwm_porcent(gpio, i);
-        sleep_ms(delay_ms);
-    }
-}
-
-// Função para diminuir a intensidade gradualmente
-void decrease_pwm(uint gpio, uint8_t start_percent, uint8_t end_percent, uint delay_ms) 
-{
-    for (int8_t i = start_percent; i >= end_percent; i--) 
-    {
-        set_pwm_porcent(gpio, i);
-        sleep_ms(delay_ms);
-    }
-}
-
 // Função para mover o pwm para uma posição específica
 void move_pwm(uint gpio, uint16_t us, uint delay_ms) 
 {
@@ -68,11 +40,29 @@ void move_pwm(uint gpio, uint16_t us, uint delay_ms)
     sleep_ms(delay_ms);
 }
 
+// Função para aumentar a posição gradualmente em graus
+void increase_pwm(uint gpio, uint16_t start_us, uint16_t end_us, uint delay_ms) 
+{
+    for (uint16_t us = start_us; us <= end_us; us += 10) // Incremento de 10us para suavidade
+    {
+        set_pwm_us(gpio, us);
+        sleep_ms(delay_ms);
+    }
+}
+
+// Função para diminuir a posição gradualmente em graus
+void decrease_pwm(uint gpio, uint16_t start_us, uint16_t end_us, uint delay_ms) 
+{
+    for (uint16_t us = start_us; us >= end_us; us -= 10) // Decremento de 10us para suavidade
+    {
+        set_pwm_us(gpio, us);
+        sleep_ms(delay_ms);
+    }
+}
+
 int main() 
 {
     stdio_init_all();
-    //gpio_init(RED_PIN);
-    //gpio_init(SERVO_PIN);
     
     // Configura PWM para um período de 20ms (50Hz)
     configure_pwm(RED_PIN, 20.0f);
@@ -93,8 +83,8 @@ int main()
         move_pwm(SERVO_PIN, 500, 2000);
 
         // Move lentamente de 0º a 180º e volta
-        increase_pwm(SERVO_PIN, 0, 100, 50);
-        decrease_pwm(SERVO_PIN, 100, 0, 50);
+        increase_pwm(SERVO_PIN, 500, 2400, 50);
+        decrease_pwm(SERVO_PIN, 2400, 500, 50);
     }
 
     return 0;
