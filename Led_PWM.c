@@ -4,7 +4,7 @@
 #include "hardware/timer.h"
 #include "hardware/clocks.h"
 
-#define RED_PIN 12          // Pinos do LED RGB
+#define BLUE_PIN 12          // Pinos do LED RGB
 #define SERVO_PIN 22        // Pino do motor servo
 
 // Função para configurar PWM no pino especificado com um período desejado
@@ -24,11 +24,11 @@ void set_pwm_us(uint gpio, uint16_t us)
 {
     uint slice_num = pwm_gpio_to_slice_num(gpio);
     uint32_t clock = clock_get_hz(clk_sys);
-    uint32_t top = pwm_hw->slice[slice_num].top;
+    uint32_t top = pwm_hw->slice[slice_num].top; // Valor máximo do contador PWM
     uint32_t level = (us * (top + 1)) / 20000;  // 20000us é o período de 20ms
 
     // Adiciona mensagens de depuração
-    printf("set_pwm_us - gpio: %d, us: %d, clock: %d, top: %d, level: %d\n", gpio, us, clock, top, level);
+    //printf("set_pwm_us - gpio: %d, us: %d, clock: %d, top: %d, level: %d\n", gpio, us, clock, top, level);
 
     pwm_set_gpio_level(gpio, level);
 }
@@ -65,26 +65,30 @@ int main()
     stdio_init_all();
     
     // Configura PWM para um período de 20ms (50Hz)
-    configure_pwm(RED_PIN, 20.0f);
+    configure_pwm(BLUE_PIN, 20.0f);
     configure_pwm(SERVO_PIN, 20.0f);  
 
     while (1) 
     {
-        // Move para 180º (2400 us) e espera 2 segundos
+        // Move para 180º (2400 us) e espera 5 segundos
         printf("Movendo para 180º\n");
         move_pwm(SERVO_PIN, 2400, 2000);
 
-        // Move para 90º (1470 us) e espera 2 segundos
+        // Move para 90º (1470 us) e espera 5 segundos
         printf("Movendo para 90º\n");
         move_pwm(SERVO_PIN, 1470, 2000);
 
-        // Move para 0º (500 us) e espera 2 segundos
+        // Move para 0º (500 us) e espera 5 segundos
         printf("Movendo para 0º\n");
         move_pwm(SERVO_PIN, 500, 2000);
-
-        // Move lentamente de 0º a 180º e volta
-        increase_pwm(SERVO_PIN, 500, 2400, 50);
-        decrease_pwm(SERVO_PIN, 2400, 500, 50);
+        
+        while (1)
+        {    
+            // Move lentamente de 0º a 180º e volta
+            increase_pwm(SERVO_PIN, 500, 2400, 50);
+            decrease_pwm(SERVO_PIN, 2400, 500, 50);    
+        }
+        
     }
 
     return 0;
