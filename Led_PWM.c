@@ -72,15 +72,15 @@ int main()
     {
         // Move para 180º (2400 us) e espera 5 segundos
         printf("Movendo para 180º\n");
-        move_pwm(SERVO_PIN, 2400, 2000);
+        move_pwm(SERVO_PIN, 2400, 5000);
 
         // Move para 90º (1470 us) e espera 5 segundos
         printf("Movendo para 90º\n");
-        move_pwm(SERVO_PIN, 1470, 2000);
+        move_pwm(SERVO_PIN, 1470, 5000);
 
         // Move para 0º (500 us) e espera 5 segundos
         printf("Movendo para 0º\n");
-        move_pwm(SERVO_PIN, 500, 2000);
+        move_pwm(SERVO_PIN, 500, 5000);
         
         while (1)
         {    
