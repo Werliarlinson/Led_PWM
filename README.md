@@ -35,4 +35,4 @@ https://wokwi.com/projects/422531353362916353
 
 # Vídeo demonstrativo
 
-https://youtube.com/shorts/WWR82FalI_k
+https://youtu.be/NrBJApwNJe4
